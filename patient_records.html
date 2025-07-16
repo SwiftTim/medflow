@@ -1,0 +1,102 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patients</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+		
+		<!-- Favicons -->
+		<link href="assets/img/favicon.png" rel="icon">
+		
+		<!-- Bootstrap CSS -->
+		<link rel="stylesheet" href="assets/css/bootstrap.min.css">
+		
+		<!-- Fontawesome CSS -->
+		<link rel="stylesheet" href="assets/plugins/fontawesome/css/fontawesome.min.css">
+		<link rel="stylesheet" href="assets/plugins/fontawesome/css/all.min.css">
+		
+		<!-- Main CSS -->
+		<link rel="stylesheet" href="assets/css/style.css">
+		
+		<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+		<!--[if lt IE 9]>
+			<script src="assets/js/html5shiv.min.js"></script>
+			<script src="assets/js/respond.min.js"></script>
+		<![endif]-->
+</head>
+<body>
+<div class="row mb-3">
+  <div class="col-md-4 offset-md-8">
+    <input type="text" id="searchInput" class="form-control" placeholder="Search by Description or ID...">
+  </div>
+</div>
+
+<table class="table table-hover table-center mb-0" id="recordsTable">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Date</th>
+      <th>Description</th>
+      <th>Attachment</th>
+      <th>Created</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody id="recordBody">
+    <!-- Records dynamically rendered by JavaScript -->
+  </tbody>
+</table>
+
+<script>
+  const doctorId = "DOC123"; // dynamically fetch this based on the logged-in user
+
+  const records = [
+    { id: "#MR-0010", date: "2025-07-01", description: "Dental Filling", file: "dental-test.pdf", doctor_id: "DOC123", doctor_name: "Dr. Ruby Perrin", image: "doctor-thumb-01.jpg", specialty: "Dental" },
+    { id: "#MR-0009", date: "2025-06-30", description: "Teeth Cleaning", file: "dental-clean.pdf", doctor_id: "DOC456", doctor_name: "Dr. Darren Elder", image: "doctor-thumb-02.jpg", specialty: "Dental" }
+    // ...additional records fetched from DB
+  ];
+
+  function renderTable(filterText = "") {
+    const body = document.getElementById("recordBody");
+    body.innerHTML = "";
+    records
+      .filter(rec => rec.doctor_id === doctorId &&
+        (rec.description.toLowerCase().includes(filterText.toLowerCase()) ||
+         rec.id.toLowerCase().includes(filterText.toLowerCase())))
+      .forEach(rec => {
+        body.innerHTML += `
+          <tr>
+            <td><a href="javascript:void(0);">${rec.id}</a></td>
+            <td>${rec.date}</td>
+            <td>${rec.description}</td>
+            <td><a href="#">${rec.file}</a></td>
+            <td>
+              <h2 class="table-avatar">
+                <a href="doctor-profile.html" class="avatar avatar-sm mr-2">
+                  <img class="avatar-img rounded-circle" src="assets/img/doctors/${rec.image}" alt="User Image">
+                </a>
+                <a href="doctor-profile.html">${rec.doctor_name} <span>${rec.specialty}</span></a>
+              </h2>
+            </td>
+            <td class="text-right">
+              <div class="table-action">
+                <a href="javascript:void(0);" class="btn btn-sm bg-info-light">
+                  <i class="far fa-eye"></i> View
+                </a>
+                <a href="javascript:void(0);" class="btn btn-sm bg-primary-light">
+                  <i class="fas fa-print"></i> Print
+                </a>
+              </div>
+            </td>
+          </tr>`
+      });
+  }
+
+  document.getElementById("searchInput").addEventListener("input", function () {
+    renderTable(this.value);
+  });
+
+  renderTable();
+</script>
+</body>
+</html>

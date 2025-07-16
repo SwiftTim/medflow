@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- doccure/patient-dashboard.html  30 Nov 2019 04:12:16 GMT -->
+<head>
+    <meta charset="utf-8">
+    <title>Doctors Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+
+    <!-- Favicons -->
+    <link href="assets/img/favicon.png" rel="icon">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+
+    <!-- Fontawesome CSS -->
+    <link rel="stylesheet" href="assets/plugins/fontawesome/css/fontawesome.min.css">
+    <link rel="stylesheet" href="assets/plugins/fontawesome/css/all.min.css">
+
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+        <script src="assets/js/html5shiv.min.js"></script>
+        <script src="assets/js/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+<body>
+
+    <!-- Main Wrapper -->
+    <div class="main-wrapper">
+
+        <!-- Header -->
+        <header class="header">
+            <nav class="navbar navbar-expand-lg header-nav">
+                <div class="navbar-header">
+                    <a id="mobile_btn" href="javascript:void(0);">
+                        <span class="bar-icon">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </span>
+                    </a>
+                    <a href="login.html" class="navbar-brand logo">
+                        <img src="assets/img/logo.png" class="img-fluid" alt="Logo">
+                    </a>
+                </div>
+                <div class="main-menu-wrapper">
+                    <div class="menu-header">
+                        <a href="login.html" class="menu-logo">
+                            <img src="assets/img/logo.png" class="img-fluid" alt="Logo">
+                        </a>
+                        <a id="menu_close" class="menu-close" href="javascript:void(0);">
+                            <i class="fas fa-times"></i>
+                        </a>
+                    </div>
+                    <ul class="main-nav">
+                        <li>
+                            <a href="login.html">Home</a>
+                        </li>
+                        <li class="has-submenu">
+                            <ul class="submenu">
+                                <li><a href="doctor-dashboard.html">Doctor Dashboard</a></li>
+                                <li><a href="checkout.html">Appointments</a></li>
+                                <li><a href="schedule-timings.html">Schedule Timing</a></li>
+                                <li><a href="my-patients.html">Patients List</a></li>
+                                <li><a href="patient-profile.html">Patients Profile</a></li>
+                                <li><a href="chat-doctor.html">Chat</a></li>
+                                <li><a href="invoices.html">Invoices</a></li>
+                                <li><a href="doctor-profile-settings.html">Profile Settings</a></li>
+                                <li><a href="reviews.html">Reviews</a></li>
+                                <li><a href="doctor-register.html">Doctor Register</a></li>
+                            </ul>
+                        </li>
+
+                        <li class="has-submenu">
+                            <a href="#">Pages <i class="fas fa-chevron-down"></i></a>
+                            <ul class="submenu">
+
+                                <li><a href="search.html">Search Doctors</a></li>
+                                <li><a href="calendar.html">Calendar</a></li>
+
+                                </li>
+
+                                <li><a href="login.html">Login</a></li>
+
+                                <li><a href="forgot-password.html">Forgot Password</a></li>
+                            </ul>
+                        </li>
+                        <li>
+
+                        </li>
+                        <li class="login-link">
+
+                        </li>
+                    </ul>
+                </div>
+                <ul class="nav header-navbar-rht">
+                    <li class="nav-item contact-item">
+                        <div class="header-contact-img">
+                            <i class="far fa-hospital"></i>
+                        </div>
+                        <div class="header-contact-detail">
+                            <p class="contact-header">Contact</p>
+                            <p class="contact-info-header"> +254874296</p>
+                        </div>
+                    </li>
+
+                    <!-- User Menu -->
+                    <li class="nav-item dropdown has-arrow logged-item">
+                        <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
+                            <span class="user-img">
+                                <img class="rounded-circle" src="assets/img/patients/patient.jpg" width="31" alt="User Avatar" id="headerUserImage">
+                            </span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <div class="user-header">
+                                <div class="avatar avatar-sm">
+                                    <img src="assets/img/patients/patient.jpg" alt="User Image" class="avatar-img rounded-circle" id="dropdownUserImage">
+                                </div>
+                                <div class="user-text">
+                                    <h6 id="headerUserName">Loading...</h6>
+                                    <p class="text-muted mb-0" id="headerUserRole">Doctor</p>
+                                </div>
+                            </div>
+                            <a class="dropdown-item" href="patient-dashboard.html">Dashboard</a>
+                            <a class="dropdown-item" href="javascript:void(0);" id="logoutButton">Logout</a>
+                        </div>
+                    </li>
+                    <!-- /User Menu -->
+
+                </ul>
+            </nav>
+        </header>
+        <!-- /Header -->
+
+        <!-- Breadcrumb -->
+        <div class="breadcrumb-bar">
+            <div class="container-fluid">
+                <div class="row align-items-center">
+                    <div class="col-md-12 col-12">
+                        <nav aria-label="breadcrumb" class="page-breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="login.html">Home</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+                            </ol>
+                        </nav>
+                        <h2 class="breadcrumb-title">Dashboard</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /Breadcrumb -->
+
+        <!-- Page Content -->
+        <div class="content">
+            <div class="container-fluid">
+
+                <div class="row">
+
+                    <!-- Profile Sidebar -->
+                    <div class="col-md-5 col-lg-4 col-xl-3 theiaStickySidebar">
+                        <div class="profile-sidebar">
+                            <div class="widget-profile pro-widget-content">
+                                <div class="profile-info-widget">
+                                    <a href="#" class="booking-doc-img">
+                                        <img src="assets/img/patients/patient.jpg" alt="User Image" id="sidebarUserImage">
+                                    </a>
+                                    <div class="profile-det-info">
+                                        <h3 id="sidebarUserName">Loading...</h3>
+                                        <div class="patient-details">
+                                            <h5 id="sidebarUserRoleText"></h5>
+                                            <h5 class="mb-0" id="sidebarUserEmail"></h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="dashboard-widget">
+                                <nav class="dashboard-menu">
+                                    <ul>
+                                        <li class="active">
+                                            <a href="doc-dash.html">
+                                                <i class="fas fa-columns"></i>
+                                                <span>Dashboard</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="https://web.whatsapp.com" target="_blank">
+                                                <i class="fas fa-comments"></i>
+                                                <span>Message</span>
+                                                <small class="unread-msg">!</small>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="orderr.html">
+                                                <i class="fas fa-clipboard-list"></i>
+                                                <span>Orders</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="login.html">
+                                                <i class="fas fa-lock"></i>
+                                                <span>Change Password</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="login.html" id="sidebarLogoutButton">
+                                                <i class="fas fa-sign-out-alt"></i>
+                                                <span>Logout</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- / Profile Sidebar -->
+
+                    <div class="col-md-7 col-lg-8 col-xl-9">
+                        <div class="card">
+                            <div class="card-body pt-0">
+
+                                <!-- Tab Menu -->
+                                <nav class="user-tabs mb-4">
+                                    <ul class="nav nav-tabs nav-tabs-bottom nav-justified">
+                                        <li class="nav-item">
+                                            <a class="nav-link active" href="#pat_appointments" data-toggle="tab">Appointments</a>
+                                        </li>
+                                       <li class="nav-item">
+  <a class="nav-link" href="https://glass.health" target="_blank">Research</a>
+</li>
+
+                                         <li class="nav-item">
+  <a class="nav-link" href="https://www.nice.org.uk/guidance" target="_blank">Guidelines</a>
+</li>
+
+
+                                        <li class="nav-item">
+  <a class="nav-link" href="https://www.drugs.com/" target="_blank">Drug Info</a>
+</li>
+
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="#pat_checkout" data-toggle="tab">Register new patient</a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                                <!-- /Tab Menu -->
+
+                                <!-- Tab Content -->
+                                <div class="tab-content pt-0">
+
+                                   <!-- Your HTML for the Appointment Tab remains the same -->
+<div id="pat_appointments" class="tab-pane fade show active">
+    <div class="card card-table mb-0">
+        <div class="card-body">
+            <!-- Search Form (Placeholder - client-client filtering or advanced Firebase queries would be needed for dynamic search) -->
+            <form class="mb-3" onsubmit="return false;">
+                <div class="row">
+                    <div class="col-md-4">
+                        <input type="text" name="query" class="form-control" placeholder="Search by patient, doctor, or phone...">
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary">Search</button>
+                    </div>
+                </div>
+            </form>
+            <!-- /Search Form -->
+
+            <div class="table-responsive">
+                <table class="table table-hover table-center mb-0">
+                    <thead>
+                        <tr>
+                            <th>Patient Name</th>
+                            <th>Phone</th>
+                            <th>Appointment Type</th>
+                            <th>Doctor</th> <!-- We'll still display this, even if it's always the logged-in doctor -->
+                            <th>Appt Date</th>
+                            <th>Time</th>
+                            <th>Reason</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="appointmentsTableBody">
+                        <!-- Appointments will be loaded here dynamically by JavaScript -->
+                        <tr><td colspan="8" class="text-center">Loading appointments...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Appointment Tab -->
+
+                                    <!-- Prescription Tab -->
+<div class="tab-pane fade" id="pat_prescriptions">
+    <div class="card card-table mb-0">
+        <div class="card-body">
+            <!-- Search Form (Placeholder - client-side filtering or advanced Firebase queries would be needed for dynamic search) -->
+            <form class="mb-3" onsubmit="return false;">
+                <div class="row">
+                    <div class="col-md-4">
+                        <input type="text" name="query" class="form-control" placeholder="Search by patient, doctor, or phone...">
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary">Search</button>
+                    </div>
+                </div>
+            </form>
+            <!-- /Search Form -->
+            <div class="table-responsive">
+                <table class="table table-hover table-center mb-0">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Patient Name</th>
+                            <th>Created by</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="prescriptionsTableBody">
+                        <!-- Prescriptions will be loaded here dynamically by JavaScript -->
+                        <tr><td colspan="4" class="text-center">Loading prescriptions...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Prescription Tab -->
+
+											
+										
+										
+				<!-- Billing Tab -->
+<div id="pat_billing" class="tab-pane fade">
+  <div class="card card-table mb-0">
+    <div class="card-body">
+
+      <!-- Search Form (Placeholder - client-side filtering or advanced Firebase queries would be needed for dynamic search) -->
+      <form class="mb-3" onsubmit="return false;">
+        <div class="row">
+          <div class="col-md-4">
+            <input type="text" name="query" class="form-control" placeholder="Search by invoice number or doctor...">
+          </div>
+          <div class="col-md-2">
+            <button type="submit" class="btn btn-primary">Search</button>
+          </div>
+        </div>
+      </form>
+      <!-- /Search Form -->
+
+      <div class="table-responsive">
+        <table class="table table-hover table-center mb-0">
+          <thead>
+            <tr>
+              <th>Invoice No</th>
+              <th>Doctor</th>
+              <th>Amount</th>
+              <th>Actions</th> <!-- Added an "Actions" header for consistency and future buttons -->
+            </tr>
+          </thead>
+          <tbody id="billingTableBody">
+            <!-- Billing records will be loaded here dynamically by JavaScript -->
+            <tr><td colspan="4" class="text-center">Loading billing records...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /Billing Tab -->
+
+<!-- Registration Tab for Receptionist (New Patient) -->
+<div id="pat_checkout" class="tab-pane fade">
+  <div class="card mb-0">
+    <div class="card-body">
+      <form id="newAppointmentForm"> <!-- Added ID and removed action/method -->
+        <h4 class="card-title">New Appointment</h4>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group card-label">
+              <label>Patient Full Name</label>
+              <input type="text" name="patient_name" class="form-control" required />
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group card-label">
+              <label>Phone Number</label>
+              <input type="text" name="phone" class="form-control" required />
+            </div>
+          </div>
+          <div class="col-md-6">
+  <div class="form-group card-label">
+    <label>Doctor</label>
+    <select name="doctor_id" id="doctorSelect" class="form-control" required>
+      <!-- Doctors will be loaded here dynamically by JavaScript -->
+      <option value="">Loading Doctors...</option>
+    </select>
+  </div>
+</div>
+
+          <div class="col-md-6">
+            <div class="form-group card-label">
+              <label>Appointment Type</label>
+              <select name="appointment_type" class="form-control" required>
+                <option value="">Select Type</option>
+                <option value="inpatient">Inpatient</option>
+                <option value="outpatient">Outpatient</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group card-label">
+              <label>Appointment Date</label>
+              <input type="date" name="appointment_date" class="form-control" required />
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group card-label">
+              <label>Time</label>
+              <input type="time" name="appointment_time" class="form-control" required />
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group card-label">
+              <label>Appointment Reason</label>
+              <input type="text" name="reason" class="form-control" required />
+            </div>
+          </div>
+        </div>
+        <form id="newAppointmentForm">
+  <!-- Your input fields here -->
+
+  <div class="submit-section mt-4">
+    <button type="submit" class="btn btn-primary submit-btn">Book Appointment</button>
+  </div>
+</form>
+
+      </form>
+    </div>
+  </div>
+</div>
+<!-- /Registration Tab -->
+
+									</div>
+									<!-- Tab Content -->
+									
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+
+			</div>		
+			<!-- /Page Content -->
+   
+			<!-- Footer -->
+			<footer class="footer">
+				
+				<!-- Footer Top -->
+				<div class="footer-top">
+					<div class="container-fluid">
+						<div class="row">
+							<div class="col-lg-3 col-md-6">
+							
+								<!-- Footer Widget -->
+								<div class="footer-widget footer-about">
+									<div class="footer-logo">
+										<img src="assets/img/footer-logo.png" alt="logo">
+									</div>
+									<div class="footer-about-content">
+										<p>Description of st josephs hospital </p>
+										<div class="social-icon">
+											<ul>
+												<li>
+													<a href="#" target="_blank"><i class="fab fa-facebook-f"></i> </a>
+												</li>
+												<li>
+													<a href="#" target="_blank"><i class="fab fa-twitter"></i> </a>
+												</li>
+												<li>
+													<a href="#" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+												</li>
+												<li>
+													<a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
+												</li>
+												<li>
+													<a href="#" target="_blank"><i class="fab fa-dribbble"></i> </a>
+												</li>
+											</ul>
+										</div>
+									</div>
+								</div>
+								<!-- /Footer Widget -->
+								
+							</div>
+							
+							<div class="col-lg-3 col-md-6">
+							
+								<!-- Footer Widget -->
+								<div class="footer-widget footer-menu">
+									<h2 class="footer-title">For Patients</h2>
+									<ul>
+										
+										<li><a href="login.html"><i class="fas fa-angle-double-right"></i> Login</a></li>
+								
+										
+									</ul>
+								</div>
+								<!-- /Footer Widget -->
+								
+							</div>
+							
+							<div class="col-lg-3 col-md-6">
+							
+								<!-- Footer Widget -->
+								<div class="footer-widget footer-menu">
+									<h2 class="footer-title">For Doctors</h2>
+									<ul>
+										
+										<li><a href="https://wa.me/254745799633"><i class="fas fa-angle-double-right"></i> Chat</a></li>
+										
+										<li><a href="doctor-register.html"><i class="fas fa-angle-double-right"></i> Register</a></li>
+										
+									</ul>
+								</div>
+								<!-- /Footer Widget -->
+								
+							</div>
+							
+							<div class="col-lg-3 col-md-6">
+							
+								<!-- Footer Widget -->
+								<div class="footer-widget footer-contact">
+									<h2 class="footer-title">Contact Us</h2>
+									<div class="footer-contact-info">
+										<div class="footer-address">
+											<span><i class="fas fa-map-marker-alt"></i></span>
+											<p> Address 1<br>Address 2 </p>
+										</div>
+										<p>
+											<i class="fas fa-phone-alt"></i>
+											contact 1
+										</p>
+										<p class="mb-0">
+											<i class="fas fa-envelope"></i>
+											email
+										</p>
+									</div>
+								</div>
+								<!-- /Footer Widget -->
+								
+							</div>
+							
+						</div>
+					</div>
+				</div>
+				<!-- /Footer Top -->
+				
+				<!-- Footer Bottom -->
+                <div class="footer-bottom">
+					<div class="container-fluid">
+					
+						<!-- Copyright -->
+						<div class="copyright">
+							<div class="row">
+								<div class="col-md-6 col-lg-6">
+									<div class="copyright-text">
+										
+									</div>
+								</div>
+								<div class="col-md-6 col-lg-6">
+								
+									<!-- Copyright Menu -->
+									<div class="copyright-menu">
+										<ul class="policy-menu">
+											<li><a href="term-condition.html">Terms and Conditions</a></li>
+											<li><a href="privacy-policy.html">Policy</a></li>
+										</ul>
+									</div>
+									<!-- /Copyright Menu -->
+									
+								</div>
+							</div>
+						</div>
+						<!-- /Copyright -->
+						
+					</div>
+				</div>
+				<!-- /Footer Bottom -->
+				
+			</footer>
+			<!-- /Footer -->
+		   
+		</div>
+		<!-- /Main Wrapper -->
+		 <!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+
+<!-- Other Libraries -->
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/popper.min.js"></script>
+<script src="assets/js/bootstrap.min.js"></script>
+<script src="assets/plugins/theia-sticky-sidebar/ResizeSensor.js"></script>
+<script src="assets/plugins/theia-sticky-sidebar/theia-sticky-sidebar.js"></script>
+<script src="assets/js/script.js"></script>
+
+
+<!-- Use ES module for modern Firebase -->
+<script type="module">
+  
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+  import { getDatabase, ref, onValue, query, orderByChild, equalTo } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCLzofD9xL1agw4Vc6ZzWotzSnkxv-r_-E",
+    authDomain: "medflow-53221.firebaseapp.com",
+    databaseURL: "https://medflow-53221-default-rtdb.firebaseio.com",
+    projectId: "medflow-53221",
+    storageBucket: "medflow-53221.appspot.com",
+    messagingSenderId: "644922689822",
+    appId: "1:644922689822:web:531fb3d8cfc8f95f96a10f",
+    measurementId: "G-EBB98DEES0"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const database = getDatabase(app);
+  const auth = getAuth(app);
+
+  const appointmentsRootRef = ref(database, 'appointments');
+  const doctorsRef = ref(database, 'doctors');
+
+  let currentDoctorUid = null;
+  let doctorCache = {};
+
+  function loadDoctorNames() {
+    onValue(doctorsRef, (snapshot) => {
+      const data = snapshot.val();
+      doctorCache = data || {};
+      console.log("Doctor Cache:", doctorCache);
+    });
+  }
+  function loadDoctorNameToHeader() {
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      const doctorRef = ref(db, `doctors/${user.uid}`);
+      onValue(doctorRef, (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          document.getElementById('headerUserName').textContent = data.name || 'Doctor';
+          document.getElementById('headerUserRole').textContent = data.role || 'Doctor';
+        } else {
+          document.getElementById('headerUserName').textContent = 'Unknown';
+          document.getElementById('headerUserRole').textContent = 'Unknown Role';
+        }
+      });
+    } else {
+      document.getElementById('headerUserName').textContent = 'Not logged in';
+      document.getElementById('headerUserRole').textContent = '';
+    }
+  });
+}
+
+  function loadAppointments() {
+  const tbody = document.getElementById("appointmentsTableBody");
+  if (!tbody) {
+    console.warn("appointmentsTableBody not found.");
+    return;
+  }
+
+  tbody.innerHTML = '<tr><td colspan="8" class="text-center">Loading appointments...</td></tr>';
+
+  if (!currentDoctorUid) {
+    console.log("No doctor logged in. Cannot load appointments.");
+    tbody.innerHTML = '<tr><td colspan="8" class="text-center text-danger">Please log in to view appointments.</td></tr>';
+    return;
+  }
+
+  const doctorsAppointmentsQuery = query(
+    appointmentsRootRef,
+    orderByChild('doctor_id'),
+    equalTo(currentDoctorUid)
+  );
+
+  onValue(doctorsAppointmentsQuery, (snapshot) => {
+    const data = snapshot.val();
+    console.log(`Appointments data received for doctor ${currentDoctorUid}:`, data);
+
+    if (!data) {
+      tbody.innerHTML = '<tr><td colspan="8" class="text-center">No appointments found for you.</td></tr>';
+      return;
+    }
+
+    const sortedKeys = Object.keys(data).sort((a, b) => {
+      const apptA = data[a];
+      const apptB = data[b];
+      const dateA = new Date(`${apptA.appointment_date}T${apptA.appointment_time}`);
+      const dateB = new Date(`${apptB.appointment_date}T${apptB.appointment_time}`);
+      return dateB - dateA;
+    });
+
+    tbody.innerHTML = ''; // Clear loading message
+
+    sortedKeys.forEach((key) => {
+      const appt = data[key];
+      const doctorName = doctorCache[appt.doctor_id]?.name || "N/A";
+      if (doctorName === "N/A") {
+        console.warn(`Doctor UID ${appt.doctor_id} not found in cache for appointment ${key}`);
+      }
+
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${appt.patient_name || 'N/A'}</td>
+        <td>${appt.phone || 'N/A'}</td>
+        <td>${appt.appointment_type || 'N/A'}</td>
+        <td>${doctorName}</td>
+        <td>${appt.appointment_date || 'N/A'}</td>
+        <td>${appt.appointment_time || 'N/A'}</td>
+        <td>${appt.reason || 'N/A'}</td>
+        <td class="text-right">
+          <a href="ptest.html?id=${appt.patient_id}" class="btn btn-sm bg-info-light">
+            <i class="far fa-eye"></i> View
+          </a>
+        </td>
+      `;
+      tbody.appendChild(row);
+    });
+  }, (error) => {
+    console.error("Error loading appointments:", error);
+    tbody.innerHTML = '<tr><td colspan="8" class="text-center text-danger">Error loading appointments. Please try again.</td></tr>';
+  });
+}
+
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      currentDoctorUid = user.uid;
+      loadDoctorNames();
+      loadAppointments();
+    } else {
+      currentDoctorUid = null;
+      console.warn("User not logged in.");
+    }
+  });
+</script>
+
+
+
+</script>
+
+</script>
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    loadDoctorNameToHeader();
+  });
+</script>
+</body>
+</html>
+

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Billing Details</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <div class="container mt-5">
+    <h3 id="invoiceTitle">Process Payment</h3>
+    <form id="billingForm">
+      <div class="form-group">
+        <label>Amount</label>
+        <input type="text" class="form-control" id="amountInput" name="amount" readonly>
+      </div>
+
+      <div class="form-group">
+        <label>Mode of Payment</label>
+        <select class="form-control" id="paymentMode" required>
+          <option value="">Select</option>
+          <option value="cash">Cash</option>
+          <option value="mpesa">M-Pesa</option>
+        </select>
+      </div>
+
+      <div class="form-group d-none" id="mpesaSection">
+        <label>M-Pesa Phone Number</label>
+        <div class="input-group">
+          <input type="text" class="form-control" id="mpesaPhone" placeholder="e.g. 0712345678">
+          <div class="input-group-append">
+            <button type="button" class="btn btn-success" id="stkPushBtn">Prompt Payment</button>
+          </div>
+        </div>
+        <small id="stkStatus" class="text-muted"></small>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Submit Payment</button>
+    </form>
+  </div>
+
+  <!-- Hidden printable receipt -->
+  <div id="receipt" class="d-none p-4" style="max-width: 500px; margin: auto; font-family: monospace; border: 1px solid #ccc;">
+    <h5 class="text-center">St. Josephs Hospital</h5>
+    <p class="text-center mb-1">VAT INVOICE</p>
+    <p>Invoice No: <span id="printInvoiceNo"></span></p>
+    <p>Date: <span id="printDate"></span></p>
+    <p>Amount: KES <span id="printAmount"></span></p>
+    <p>VAT (16%): KES <span id="printVAT"></span></p>
+    <p><strong>Total Paid: KES <span id="printTotal"></span></strong></p>
+    <p>Mode: <span id="printMode"></span></p>
+    <hr>
+    <p class="text-center">Thank you!</p>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js';
+    import { getDatabase, ref, get, update, serverTimestamp } from 'https://www.gstatic.com/firebasejs/9.6.10/firebase-database.js';
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCLzofD9xL1agw4Vc6ZzWotzSnkxv-r_-E",
+      authDomain: "medflow-53221.firebaseapp.com",
+      databaseURL: "https://medflow-53221-default-rtdb.firebaseio.com",
+      projectId: "medflow-53221",
+      storageBucket: "medflow-53221.appspot.com",
+      messagingSenderId: "644922689822",
+      appId: "1:644922689822:web:531fb3d8cfc8f95f96a10f"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    let billingData = {};
+    const params = new URLSearchParams(window.location.search);
+    const patientId = params.get("patientId");
+    const invoiceId = params.get("invoiceId");
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      if (!patientId || !invoiceId) return;
+
+      const invoiceRef = ref(db, `patient_profiles/${patientId}/billing/${invoiceId}`);
+      const snapshot = await get(invoiceRef);
+      if (snapshot.exists()) {
+        billingData = snapshot.val();
+        const amount1 = parseFloat(billingData.amount || 0); // Safely get amount, default to 0 if not present
+const amount2 = parseFloat(billingData.amount2 || 0); // Safely get amount2, default to 0 if not present
+const totalDisplayAmount = amount1 + amount2;
+      document.getElementById("amountInput").value = totalDisplayAmount.toFixed(2);
+        document.getElementById("invoiceTitle").textContent = `Process Payment for Invoice #${billingData.invoiceNo}`;
+      } else {
+        alert("Billing record not found.");
+      }
+
+      document.getElementById("paymentMode").addEventListener("change", (e) => {
+        const mode = e.target.value;
+        document.getElementById("mpesaSection").classList.toggle("d-none", mode !== "mpesa");
+      });
+
+      document.getElementById("stkPushBtn").addEventListener("click", async () => {
+        const phone = document.getElementById("mpesaPhone").value.trim();
+        const baseAmount = parseFloat(billingData.amount);
+        const vat = baseAmount * 0.16;
+        const amount = Math.round(baseAmount + vat);
+        const status = document.getElementById("stkStatus");
+        status.textContent = "Sending prompt...";
+
+        try {
+          const response = await fetch("http://localhost:5000/api/stk-push", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              phone,
+              amount
+            })
+          });
+          const data = await response.json();
+          if (data.success) {
+            status.textContent = `STK Push sent to ${phone}. Awaiting PIN entry.`;
+          } else {
+            status.textContent = `Error: ${data.message || "Failed to initiate STK push."}`;
+          }
+        } catch (err) {
+          status.textContent = "Failed to connect to STK API.";
+        }
+      });
+
+      document.getElementById("billingForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const mode = document.getElementById("paymentMode").value;
+        if (!mode) return alert("Please select a mode of payment.");
+
+        await update(ref(db, `patient_profiles/${patientId}/billing/${invoiceId}`), {
+          status: "processed",
+          paymentMode: mode,
+          processedAt: serverTimestamp()
+        });
+
+        if (mode === "cash") {
+          const base = parseFloat(billingData.amount);
+          const vat = base * 0.16;
+          const total = base + vat;
+
+          document.getElementById("printInvoiceNo").textContent = billingData.invoiceNo;
+          document.getElementById("printDate").textContent = new Date().toLocaleString();
+          document.getElementById("printAmount").textContent = base.toFixed(2);
+          document.getElementById("printVAT").textContent = vat.toFixed(2);
+          document.getElementById("printTotal").textContent = total.toFixed(2);
+          document.getElementById("printMode").textContent = "Cash";
+
+          const receipt = document.getElementById("receipt");
+          receipt.classList.remove("d-none");
+          window.print();
+        } else {
+          alert("M-Pesa payment initiated. Please confirm on device.");
+        }
+      });
+    });
+  </script>
+</body>
+</html>

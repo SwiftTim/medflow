@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>My Patients</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+    <link href="assets/img/favicon.png" rel="icon">
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/plugins/fontawesome/css/fontawesome.min.css">
+    <link rel="stylesheet" href="assets/plugins/fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<div class="main-wrapper">
+  <div class="content">
+    <div class="container">
+      <h3 class="my-4">My Patients</h3>
+
+      <div class="row">
+        {% for patient in patients %}
+        <div class="col-md-4">
+          <div class="card">
+            <div class="card-body text-center">
+              <img src="{{ patient.photo_url }}" class="rounded-circle mb-2" width="80" alt="Patient Image">
+              <h5>{{ patient.name }}</h5>
+              <p>ID: {{ patient.patient_id }}</p>
+              <a href="patient-profile.html?id={{ patient.patient_id }}" class="btn btn-sm btn-primary">View Profile</a>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+
+        {% if patients|length == 0 %}
+        <div class="col-md-12 text-center">
+          <p class="text-muted">No patients assigned to you yet.</p>
+        </div>
+        {% endif %}
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/popper.min.js"></script>
+<script src="assets/js/bootstrap.min.js"></script>
+<script src="assets/js/script.js"></script>
+</body>
+</html>

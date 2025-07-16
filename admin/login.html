@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Login Portal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+    <link href="assets/img/favicon.png" rel="icon">
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/plugins/fontawesome/css/fontawesome.min.css">
+    <link rel="stylesheet" href="assets/plugins/fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <!-- Firebase SDKs - MUST be loaded before any custom Firebase code -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+</head>
+<body>
+
+<!-- Home Banner -->
+<section class="section section-search">
+  <div class="container-fluid">
+    <div class="banner-wrapper">
+      <div class="banner-header text-center">
+        <h1>Login Portal</h1>
+        <p>Access your role-specific features</p>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- /Home Banner -->
+
+<!-- Login Form -->
+<div class="container mt-4">
+  <form id="roleLoginForm" class="card p-4 shadow">
+    <h4 class="mb-4">Login As</h4>
+
+    <div class="form-group">
+      <label for="role">Select Role:</label>
+      <select class="form-control" id="role" required>
+        <option value="">-- Choose Role --</option>
+        <option value="doctor">Doctor</option>
+        <option value="nurse">Nurse</option>
+        <option value="pharmacist">Pharmacist</option>
+        <option value="lab_technician">Lab Technician</option>
+        <option value="receptionist">Receptionist</option>
+      </select>
+    </div>
+
+    <!-- The 'Professional ID' field is here, but not used in the Firebase login/redirection logic -->
+    <div class="form-group">
+      <label for="userId">Professional ID:</label>
+      <input type="text" id="userId" class="form-control" placeholder="e.g. DOC123">
+    </div>
+
+    <div class="form-group">
+      <label for="username">Email Address:</label>
+      <input type="email" id="username" class="form-control" placeholder="Enter your registered email" required>
+    </div>
+
+    <div class="form-group">
+      <label for="password">Password:</label>
+      <input type="password" id="password" class="form-control" placeholder="Enter your password" required>
+    </div>
+
+    <button type="submit" class="btn btn-primary btn-block">Login</button>
+
+    <div class="text-center mt-2">
+      <a href="forgot-password.html">Forgot Password?</a>
+      <p class="mt-2">Don't have an account? <a href="doc-reg.html">Register here</a></p>
+    </div>
+  </form>
+</div>
+
+<!-- Profile Preview (No longer used for display, but kept for context if you want to adapt it later) -->
+<div class="widget-profile pro-widget-content container mb-5 mt-4" id="profileSection" style="display:none;">
+  <!-- Content will not be displayed as we redirect immediately -->
+</div>
+
+
+<!-- JavaScript goes here, after HTML elements -->
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/popper.min.js"></script>
+<script src="assets/js/bootstrap.min.js"></script>
+<script src="assets/plugins/theia-sticky-sidebar/ResizeSensor.js"></script>
+<script src="assets/plugins/theia-sticky-sidebar/theia-sticky-sidebar.js"></script>
+<script src="assets/js/script.js"></script>
+
+<!-- Custom Firebase Login Script -->
+<script>
+    // Your Firebase project configuration - Using your provided actual values!
+    const firebaseConfig = {
+        apiKey: "AIzaSyCLzofD9xL1agw4Vc6ZzWotzSnkxv-r_-E",
+        authDomain: "medflow-53221.firebaseapp.com",
+        databaseURL: "https://medflow-53221-default-rtdb.firebaseio.com",
+        projectId: "medflow-53221",
+        storageBucket: "medflow-53221.firebasestorage.app",
+        messagingSenderId: "644922689822",
+        appId: "1:644922689822:web:531fb3d8cfc8f95f96a10f",
+        measurementId: "G-EBB98DEES0"
+    };
+
+    // Initialize Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const database = firebase.database();
+    const staffProfilesRef = database.ref('staff_profiles'); // Reference to where staff profiles are stored
+
+    // Function to handle login
+    document.getElementById("roleLoginForm").addEventListener("submit", async function (e) {
+        e.preventDefault(); // Prevent default form submission
+
+        const selectedRoleFromForm = document.getElementById("role").value; // Role chosen by user in form
+        const email = document.getElementById("username").value.trim();
+        const password = document.getElementById("password").value;
+
+        if (!selectedRoleFromForm || !email || !password) {
+            alert("Please complete all required fields.");
+            return;
+        }
+
+        try {
+            // 1. Authenticate user with Firebase Email and Password
+            const userCredential = await auth.signInWithEmailAndPassword(email, password);
+            const user = userCredential.user; // Get the authenticated user object, contains UID
+
+            // 2. Fetch additional user profile details from Realtime Database using UID
+            const snapshot = await staffProfilesRef.child(user.uid).once('value');
+            const staffProfile = snapshot.val(); // This contains name, phone, role, email from registration
+
+            if (staffProfile) {
+                const storedRole = staffProfile.role; // The role stored during registration
+
+                // Optional: Compare selected role from form with stored role in database
+                if (selectedRoleFromForm !== storedRole) {
+                    alert(`Login failed: You selected "${selectedRoleFromForm}", but your registered role is "${storedRole}". Please select the correct role.`);
+                    await auth.signOut(); // Log them out if role selection was incorrect
+                    return;
+                }
+
+                // Redirect based on the role stored in the database
+                let redirectUrl = 'index.html'; // Default redirect, e.g., to a generic dashboard
+
+                switch (storedRole) {
+                    case 'doctor':
+                       redirectUrl = '../doc-dash.html';
+                        break;
+                    case 'nurse': // Doctors and Nurses go to the same dashboard
+                        redirectUrl = '../doc-dash.html';
+                        break;
+                    case 'pharmacist':
+                        redirectUrl = '../pharmacists.html'; // Assuming hh.html is for Pharmacist
+                        break;
+                    case 'lab_technician':
+                        redirectUrl = '../lab-technician.html'; // Assuming lab.html is for Lab Technician
+                        break;
+                   case 'receptionist':
+                        redirectUrl = '../patient-dashboard.html';
+                         break;
+                         
+                    default:
+                        // Handle unknown roles or send to a general dashboard
+                        alert("Unknown role or no specific dashboard for this role. Redirecting to default.");
+                        redirectUrl = 'general-dashboard.html'; // Create a default dashboard for unhandled roles
+                        break;
+                }
+
+                alert(`Login successful! Redirecting to ${storedRole} dashboard.`);
+                window.location.href = redirectUrl; // Perform the redirection
+
+            } else {
+                // This scenario means user authenticated but no profile found in DB
+                // This shouldn't happen if registration worked correctly, but good to handle
+                console.warn("User authenticated but no profile found in Realtime Database for UID:", user.uid);
+                alert("Login failed: User profile not found. Please contact support.");
+                await auth.signOut(); // Log them out as their profile is incomplete
+            }
+
+        } catch (error) {
+            // Handle Firebase Authentication errors
+            let errorMessage = error.message;
+
+            if (error.code === 'auth/wrong-password') {
+                errorMessage = 'Incorrect password. Please try again.';
+            } else if (error.code === 'auth/user-not-found') {
+                errorMessage = 'No account found with this email. Please register or check your email.';
+            } else if (error.code === 'auth/invalid-email') {
+                errorMessage = 'The email address is not valid.';
+            } else if (error.code === 'auth/user-disabled') {
+                errorMessage = 'This account has been disabled.';
+            }
+
+            console.error("Login error:", error);
+            alert("Login failed: " + errorMessage);
+        }
+    });
+</script>
+
+</body>
+</html>

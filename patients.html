@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+  <title>Doccure - Patient Profile Audit</title>
+
+  <link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.png">
+  <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+  <link rel="stylesheet" href="assets/css/font-awesome.min.css">
+  <link rel="stylesheet" href="assets/css/feathericon.min.css">
+  <link rel="stylesheet" href="assets/plugins/datatables/datatables.min.css">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body>
+  <div class="main-wrapper">
+    <div class="page-wrapper">
+      <div class="content container-fluid">
+        <div class="page-header">
+          <div class="row">
+            <div class="col-sm-12">
+              <h3 class="page-title">Admin Tables - Patient Profile</h3>
+              <ul class="breadcrumb">
+                <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
+                <li class="breadcrumb-item active">Patient Profiles</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div id="authContainer" class="text-center">
+          <h4>Admin Access Required</h4>
+          <input type="password" id="adminPass" placeholder="Enter Admin Password" class="form-control w-25 mx-auto">
+          <button onclick="verifyPassword()" class="btn btn-primary mt-2">Access</button>
+        </div>
+
+        <div class="row" id="tableContainer" style="display:none">
+          <div class="col-sm-12">
+            <div class="card">
+              <div class="card-header"><h5>Patient Profiles</h5></div>
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table table-bordered" id="patientTable">
+                    <thead>
+                      <tr>
+                        <th>Patient ID</th>
+                        <th>Name</th>
+                        <th>Age</th>
+                        <th>Gender</th>
+                        <th>County</th>
+                        <th>Origin</th>
+                        <th>Next of Kin</th>
+                        <th>Kin Contact</th>
+                      </tr>
+                    </thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header"><h5>Additional Patient Information</h5></div>
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table table-bordered" id="extraPatientTable">
+                    <thead>
+                      <tr>
+                        <th>Patient ID</th>
+                        <th>Phone</th>
+                        <th>Blood Group</th>
+                        <th>Diagnosis</th>
+                        <th>Location Address</th>
+                      </tr>
+                    </thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/js/jquery.min.js"></script>
+  <script src="assets/plugins/datatables/jquery.dataTables.min.js"></script>
+  <script src="assets/plugins/datatables/datatables.min.js"></script>
+
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js';
+    import { getDatabase, ref, onValue } from 'https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js';
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCLzofD9xL1agw4Vc6ZzWotzSnkxv-r_-E",
+      authDomain: "medflow-53221.firebaseapp.com",
+      databaseURL: "https://medflow-53221-default-rtdb.firebaseio.com",
+      projectId: "medflow-53221",
+      storageBucket: "medflow-53221.appspot.com",
+      messagingSenderId: "644922689822",
+      appId: "1:644922689822:web:531fb3d8cfc8f95f96a10f"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const patientProfilesRef = ref(db, 'patient_profiles');
+
+    const ADMIN_PASSWORD = "admin123";
+
+    window.verifyPassword = () => {
+      const input = document.getElementById("adminPass").value;
+      if (input === ADMIN_PASSWORD) {
+        document.getElementById("authContainer").style.display = 'none';
+        document.getElementById("tableContainer").style.display = 'block';
+        loadPatients();
+        loadExtraPatientData();
+      } else {
+        alert("Incorrect password");
+      }
+    };
+
+    function appendPatientRow(tbody, values) {
+      const row = document.createElement('tr');
+      values.forEach(val => {
+        const cell = document.createElement('td');
+        cell.textContent = val || 'N/A';
+        row.appendChild(cell);
+      });
+      tbody.appendChild(row);
+    }
+
+    function loadPatients() {
+      const tbody = document.querySelector('#patientTable tbody');
+      tbody.innerHTML = '';
+
+      onValue(patientProfilesRef, (snapshot) => {
+        if (!snapshot.exists()) {
+          tbody.innerHTML = '<tr><td colspan="8" class="text-center">No patient records found.</td></tr>';
+          return;
+        }
+
+        snapshot.forEach(child => {
+          const data = child.val();
+          appendPatientRow(tbody, [
+            child.key,
+            data.name,
+            data.age,
+            data.gender,
+            data.county_of_residence,
+            data.place_of_origin,
+            data.next_of_kin_name,
+            data.next_of_kin_contact
+          ]);
+        });
+      });
+    }
+
+    function loadExtraPatientData() {
+      const tbody = document.querySelector('#extraPatientTable tbody');
+      tbody.innerHTML = '';
+
+      onValue(patientProfilesRef, (snapshot) => {
+        if (!snapshot.exists()) {
+          tbody.innerHTML = '<tr><td colspan="5" class="text-center">No additional records found.</td></tr>';
+          return;
+        }
+
+        snapshot.forEach(child => {
+          const data = child.val();
+          appendPatientRow(tbody, [
+            child.key,
+            data.phone,
+            data.blood_group,
+            data.diagnosis,
+            data.location_address
+          ]);
+        });
+      });
+    }
+  </script>
+</body>
+</html>

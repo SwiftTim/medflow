@@ -1,0 +1,239 @@
+<!-- START: Modified Pharmacist View Page -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Pharmacist View</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+  <link href="assets/img/favicon.png" rel="icon">
+  <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+  <link rel="stylesheet" href="assets/plugins/fontawesome/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<div class="main-wrapper">
+  <!-- Header -->
+  <header class="header"></header>
+  <!-- /Header -->
+
+  <div class="breadcrumb-bar">
+    <div class="container-fluid">
+      <div class="row align-items-center">
+        <div class="col-md-12 col-12">
+          <nav aria-label="breadcrumb" class="page-breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="index-2.html">Home</a></li>
+              <li class="breadcrumb-item active" aria-current="page">Prescription Details</li>
+            </ol>
+          </nav>
+          <h2 class="breadcrumb-title">Prescription Review</h2>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-5 col-lg-4 col-xl-3">
+          <div class="card widget-profile pat-widget-profile">
+            <div class="card-body">
+              <div class="pro-widget-content">
+                <div class="profile-info-widget">
+                  <img src="assets/img/patients/patient.jpg" class="booking-doc-img" alt="User Image">
+                  <div class="profile-det-info">
+                    <h3 id="patientName">Loading...</h3>
+                    <div class="patient-details">
+                      <h5><b>Patient ID:</b> <span id="patientId">Loading...</span></h5>
+                      <h5 class="mb-0"><i class="fas fa-map-marker-alt"></i> <span id="patientLocation">Loading...</span></h5>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="patient-info">
+                <ul>
+                  <li>Phone <span id="patientPhone">Loading...</span></li>
+                  <li>Age <span id="patientAge">Loading...</span>, <span id="patientGender">Loading...</span></li>
+                  <li>Blood Group <span id="patientBloodGroup">N/A</span></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-7 col-lg-8 col-xl-9">
+          <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <h4 class="card-title mb-0">Prescriptions</h4>
+            </div>
+            <div class="card-body">
+              <div id="prescriptionList">
+                <p>Loading prescriptions...</p>
+              </div>
+
+              <div class="form-group mt-4">
+                <label for="pharmacistNotes">Additional Notes</label>
+                <textarea id="pharmacistNotes" class="form-control" rows="3"></textarea>
+              </div>
+
+              <div class="form-group">
+                <label for="availabilitySelect">Drug Availability</label>
+                <select class="form-control" id="availabilitySelect">
+                  <option value="available">Available</option>
+                  <option value="unavailable">Unavailable</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="drugPrice">Add Drug Price (KSH)</label>
+                <input type="number" class="form-control" id="drugPrice" placeholder="e.g. 250">
+              </div>
+
+              <div class="text-end">
+                <button class="btn btn-primary" id="updatePrescriptionBtn">Update Prescription</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <footer class="footer text-center">
+    <p class="mb-0">&copy; 2025 Doccure. All rights reserved.</p>
+  </footer>
+</div>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js';
+import {
+  getDatabase, ref, get, update, set, serverTimestamp
+} from 'https://www.gstatic.com/firebasejs/9.6.10/firebase-database.js';
+import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCLzofD9xL1agw4Vc6ZzWotzSnkxv-r_-E",
+  authDomain: "medflow-53221.firebaseapp.com",
+  databaseURL: "https://medflow-53221-default-rtdb.firebaseio.com",
+  projectId: "medflow-53221",
+  storageBucket: "medflow-53221.appspot.com",
+  messagingSenderId: "644922689822",
+  appId: "1:644922689822:web:531fb3d8cfc8f95f96a10f"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const auth = getAuth(app);
+
+let patientId = null;
+let prescriptionId = null;
+
+function getParam(param) {
+  const url = new URL(window.location.href);
+  return url.searchParams.get(param);
+}
+
+function renderPrescription(prescription) {
+  const container = document.getElementById('prescriptionList');
+  container.innerHTML = `
+    <strong>${prescription.drug}</strong><br/>
+    <small><strong>Dosage:</strong> ${prescription.dosage}</small><br/>
+    <small><strong>Instructions:</strong> ${prescription.instructions}</small><br/>
+    <small><strong>Date:</strong> ${new Date(prescription.date).toLocaleString()}</small><br/>
+  `;
+}
+
+function loadPrescriptionData() {
+  patientId = getParam('patientId');
+  prescriptionId = getParam('prescriptionId');
+  if (!patientId || !prescriptionId) return;
+
+  document.getElementById('patientId').textContent = patientId;
+
+  const prescriptionRef = ref(db, `patient_profiles/${patientId}/prescriptions/${prescriptionId}`);
+  get(prescriptionRef).then(snapshot => {
+    if (snapshot.exists()) {
+      renderPrescription(snapshot.val());
+    } else {
+      document.getElementById('prescriptionList').innerHTML = '<p>No prescription found.</p>';
+    }
+  }).catch(error => {
+    console.error('Error fetching prescription:', error);
+  });
+}
+
+function updatePrescriptionAndBilling() {
+  const notes = document.getElementById('pharmacistNotes').value;
+  const availability = document.getElementById('availabilitySelect').value;
+  const price = parseFloat(document.getElementById('drugPrice').value || 0);
+
+  // Make sure patientId and prescriptionId are available in this scope,
+  // as they are used but not defined within the function snippet you provided.
+  // Example: if (typeof patientId === 'undefined' || typeof prescriptionId === 'undefined') {
+  //   alert("Missing required IDs: patientId or prescriptionId is not defined.");
+  //   return;
+  // }
+  if (!patientId || !prescriptionId) return alert("Missing required IDs");
+
+
+  const prescriptionRef = ref(db, `patient_profiles/${patientId}/prescriptions/${prescriptionId}`);
+  const billingRef = ref(db, `patient_profiles/${patientId}/billing`);
+
+  // First, update the prescription details
+  update(prescriptionRef, {
+    pharmacist_notes: notes,
+    availability: availability,
+    reviewed_at: serverTimestamp()
+  })
+  .then(() => {
+    // Now, handle the billing update in 'amount2'
+    get(billingRef).then(snapshot => {
+      if (snapshot.exists()) {
+        const billingData = snapshot.val();
+        // Find the latest billing entry. Realtime Database keys are often timestamps,
+        // so sorting them usually gives you the latest.
+        const latestKey = Object.keys(billingData).sort().reverse()[0];
+        const latestBill = billingData[latestKey];
+
+        // --- THE KEY CHANGE IS HERE ---
+        // We'll calculate the new total for 'amount2'.
+        // If 'amount2' doesn't exist yet, we'll start with the existing 'amount'
+        // to maintain a continuous total, otherwise start from 0 if neither exist.
+        const currentAmount2 = parseFloat(latestBill.amount2 || latestBill.amount || 0);
+        const updatedAmount2 = currentAmount2 + price;
+
+        const updateRef = ref(db, `patient_profiles/${patientId}/billing/${latestKey}`);
+        update(updateRef, { amount2: updatedAmount2 }) // Update the 'amount2' field
+          .then(() => {
+            alert('Prescription updated and billing amount (now amount2) adjusted.');
+          })
+          .catch(error => {
+            console.error('Error updating amount2 in billing:', error);
+            alert('Failed to adjust billing amount2.');
+          });
+      } else {
+        alert('No existing billing record found to update. Cannot adjust amount2.');
+      }
+    }).catch(error => {
+      console.error('Error fetching billing record:', error);
+      alert('Failed to retrieve billing information.');
+    });
+  })
+  .catch(error => {
+    console.error('Error updating prescription:', error);
+    alert('Failed to update prescription details.');
+  });
+}
+
+onAuthStateChanged(auth, (user) => {
+  if (!user) return location.href = 'login.html';
+  loadPrescriptionData();
+  document.getElementById('updatePrescriptionBtn').addEventListener('click', updatePrescriptionAndBilling);
+});
+</script>
+<script src="assets/js/bootstrap.bundle.min.js"></script>
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/script.js"></script>
+</body>
+</html>
+<!-- END -->

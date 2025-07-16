@@ -1,0 +1,183 @@
+<!-- START: Lab Technician View Page -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Lab Test Review</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+  <link href="assets/img/favicon.png" rel="icon">
+  <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+  <link rel="stylesheet" href="assets/plugins/fontawesome/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<div class="main-wrapper">
+  <header class="header"></header>
+
+  <div class="breadcrumb-bar">
+    <div class="container-fluid">
+      <div class="row align-items-center">
+        <div class="col-md-12 col-12">
+          <nav aria-label="breadcrumb" class="page-breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+              <li class="breadcrumb-item active" aria-current="page">Lab Test Details</li>
+            </ol>
+          </nav>
+          <h2 class="breadcrumb-title">Test Review</h2>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-5 col-lg-4 col-xl-3">
+          <div class="card widget-profile pat-widget-profile">
+            <div class="card-body">
+              <div class="pro-widget-content">
+                <div class="profile-info-widget">
+                  <img src="assets/img/patients/patient.jpg" class="booking-doc-img" alt="User Image">
+                  <div class="profile-det-info">
+                    <h3 id="patientName">Loading...</h3>
+                    <div class="patient-details">
+                      <h5><b>Patient ID:</b> <span id="patientId">Loading...</span></h5>
+                      <h5 class="mb-0"><i class="fas fa-map-marker-alt"></i> <span id="patientLocation">Loading...</span></h5>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="patient-info">
+                <ul>
+                  <li>Phone <span id="patientPhone">Loading...</span></li>
+                  <li>Age <span id="patientAge">Loading...</span>, <span id="patientGender">Loading...</span></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-7 col-lg-8 col-xl-9">
+          <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <h4 class="card-title mb-0">Test Details</h4>
+            </div>
+            <div class="card-body">
+              <div id="testDetails">
+                <p>Loading test information...</p>
+              </div>
+
+              <div class="form-group mt-4">
+                <label for="labResults">Lab Results</label>
+                <textarea id="labResults" class="form-control" rows="4"></textarea>
+              </div>
+
+              <div class="form-group">
+                <label for="testStatus">Status</label>
+                <select id="testStatus" class="form-control">
+                  <option value="Requested">Requested</option>
+                  <option value="Completed">Completed</option>
+                </select>
+              </div>
+
+              <div class="text-end">
+                <button class="btn btn-primary" id="updateTestBtn">Update Test</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <footer class="footer text-center">
+    <p class="mb-0">&copy; 2025 MedFlow. All rights reserved.</p>
+  </footer>
+</div>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js';
+import {
+  getDatabase, ref, get, update
+} from 'https://www.gstatic.com/firebasejs/9.6.10/firebase-database.js';
+import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCLzofD9xL1agw4Vc6ZzWotzSnkxv-r_-E",
+  authDomain: "medflow-53221.firebaseapp.com",
+  databaseURL: "https://medflow-53221-default-rtdb.firebaseio.com",
+  projectId: "medflow-53221",
+  storageBucket: "medflow-53221.appspot.com",
+  messagingSenderId: "644922689822",
+  appId: "1:644922689822:web:531fb3d8cfc8f95f96a10f"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const auth = getAuth(app);
+
+let patientId = null;
+let testId = null;
+
+function getParam(param) {
+  const url = new URL(window.location.href);
+  return url.searchParams.get(param);
+}
+
+function renderTest(test) {
+  document.getElementById('testDetails').innerHTML = `
+    <strong>${test.type}</strong><br/>
+    <small><strong>Instructions:</strong> ${test.instructions}</small><br/>
+    <small><strong>Status:</strong> ${test.status}</small><br/>
+    <small><strong>Date:</strong> ${new Date(test.date).toLocaleString()}</small><br/>
+  `;
+  document.getElementById('labResults').value = test.results || '';
+  document.getElementById('testStatus').value = test.status || 'Requested';
+}
+
+function loadTestData() {
+  patientId = getParam('patientId');
+  testId = getParam('testId');
+  if (!patientId || !testId) return;
+
+  const testRef = ref(db, `patient_profiles/${patientId}/tests/${testId}`);
+  get(testRef).then(snapshot => {
+    if (snapshot.exists()) {
+      renderTest(snapshot.val());
+    } else {
+      document.getElementById('testDetails').innerHTML = '<p>No test record found.</p>';
+    }
+  }).catch(error => {
+    console.error('Error loading test data:', error);
+  });
+}
+
+function updateTestDetails() {
+  const updatedResults = document.getElementById('labResults').value;
+  const updatedStatus = document.getElementById('testStatus').value;
+
+  const testRef = ref(db, `patient_profiles/${patientId}/tests/${testId}`);
+  update(testRef, {
+    results: updatedResults,
+    status: updatedStatus
+  }).then(() => {
+    alert('Test details updated successfully.');
+  }).catch(error => {
+    console.error('Error updating test:', error);
+  });
+}
+
+onAuthStateChanged(auth, (user) => {
+  if (!user) return location.href = 'login.html';
+  loadTestData();
+  document.getElementById('updateTestBtn').addEventListener('click', updateTestDetails);
+});
+</script>
+
+<script src="assets/js/bootstrap.bundle.min.js"></script>
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/script.js"></script>
+</body>
+</html>
+<!-- END -->

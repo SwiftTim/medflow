@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Hospital Supply Order</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+
+  <!-- Favicons -->
+  <link href="assets/img/favicon.png" rel="icon">
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+
+  <!-- Fontawesome CSS -->
+  <link rel="stylesheet" href="assets/plugins/fontawesome/css/fontawesome.min.css">
+  <link rel="stylesheet" href="assets/plugins/fontawesome/css/all.min.css">
+
+  <!-- Main CSS -->
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="account-page">
+
+<!-- Page Content -->
+<div class="content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-8 offset-md-2">
+
+        <!-- Page Header -->
+        <div class="login-header text-center mb-4">
+          <h3>Hospital Supply Order Form</h3>
+          <p>Please fill in the following details to place an order.</p>
+        </div>
+
+        <!-- Order Form -->
+        <form id="orderForm" class="card p-4 shadow-sm">
+
+          <div class="form-group form-focus">
+            <label class="focus-label">Item Name</label>
+            <input type="text" class="form-control floating" name="item_name" required>
+          </div>
+
+          <div class="form-group form-focus">
+            <label class="focus-label">Category</label>
+            <select class="form-control" name="category" required>
+              <option value=""></option>
+              <option value="medication">Medication</option>
+              <option value="equipment">Medical Equipment</option>
+              <option value="consumables">Consumables</option>
+              <option value="cleaning">Cleaning Supplies</option>
+              <option value="ppe">PPE</option>
+            </select>
+          </div>
+
+          <div class="form-group form-focus">
+            <label class="focus-label">Quantity</label>
+            <input type="number" class="form-control floating" name="quantity" required>
+          </div>
+
+          <div class="form-group form-focus">
+            <label class="focus-label">Unit Type</label>
+            <select class="form-control" name="unit_type" required>
+              <option value=""></option>
+              <option value="boxes">Boxes</option>
+              <option value="pieces">Pieces</option>
+              <option value="litres">Litres</option>
+              <option value="kits">Kits</option>
+            </select>
+          </div>
+
+          <div class="form-group form-focus">
+            <label class="focus-label">Supplier Name</label>
+            <input type="text" class="form-control floating" name="supplier" required>
+          </div>
+
+          <div class="form-group form-focus">
+            <label class="focus-label">Delivery Date</label>
+            <input type="date" class="form-control floating" name="delivery_date" required>
+          </div>
+
+          <div class="form-group form-focus">
+            <label class="focus-label">Priority Level</label>
+            <select class="form-control" name="priority" required>
+              <option value=""></option>
+              <option value="low">Low</option>
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
+              <option value="urgent">Urgent</option>
+            </select>
+          </div>
+
+          <div class="form-group form-focus">
+            <label class="focus-label">Department</label>
+            <input type="text" class="form-control floating" name="department" placeholder="e.g. Emergency" required>
+          </div>
+
+          <div class="form-group form-focus">
+            <label class="focus-label">Ordered By (Staff ID)</label>
+            <input type="text" class="form-control floating" name="staff_id" required>
+          </div>
+
+          <div class="form-group form-focus">
+            <label class="focus-label">Additional Notes</label>
+            <textarea class="form-control floating" name="notes" rows="3" placeholder="Optional instructions..."></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block btn-lg login-btn">Submit Order</button>
+        </form>
+        <!-- /Order Form -->
+
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /Page Content -->
+
+<!-- Scripts -->
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/popper.min.js"></script>
+<script src="assets/js/bootstrap.min.js"></script>
+<script src="assets/js/script.js"></script>
+
+<!-- START: Firebase SDKs - MUST be loaded before your Firebase initialization code -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+<!-- END: Firebase SDKs -->
+
+<!-- START: Firebase Integration Script - This uses the Firebase SDKs, so must come after -->
+<script>
+  // Your Firebase project configuration
+  // IMPORTANT: Replace these with your actual config details from the Firebase console!
+  const firebaseConfig = {
+  apiKey: "AIzaSyCLzofD9xL1agw4Vc6ZzWotzSnkxv-r_-E",
+  authDomain: "medflow-53221.firebaseapp.com",
+  databaseURL: "https://medflow-53221-default-rtdb.firebaseio.com",
+  projectId: "medflow-53221",
+  storageBucket: "medflow-53221.firebasestorage.app",
+  messagingSenderId: "644922689822",
+  appId: "1:644922689822:web:531fb3d8cfc8f95f96a10f",
+  measurementId: "G-EBB98DEES0"
+};
+
+  // Initialize Firebase
+  const app = firebase.initializeApp(firebaseConfig);
+  const database = firebase.database();
+  const ordersRef = database.ref('orders'); // Reference to the 'orders' path
+
+  // Listen for the form submission
+  document.getElementById("orderForm").addEventListener("submit", async function (e) {
+    e.preventDefault(); // Prevent default form submission
+
+    const formData = new FormData(this);
+    const orderData = Object.fromEntries(formData.entries());
+
+    // Add the current timestamp as 'created_at' as per your example
+    orderData.created_at = new Date().toISOString();
+
+    try {
+      // Use .push() to add the new order with a unique ID
+      await ordersRef.push(orderData);
+      alert("Order submitted successfully!");
+      this.reset(); // Reset the form fields
+    } catch (error) {
+      console.error("Error submitting order:", error);
+      alert("Failed to submit order. Please try again. Error: " + error.message);
+    }
+  });
+</script>
+<!-- END: Firebase Integration Script -->
+
+</body>
+</html>
+
+</html>

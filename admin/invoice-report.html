@@ -1,0 +1,200 @@
+<!-- Invoice Report Page with Extended Admin Tables -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+  <title>Doccure - Admin Audit Tables</title>
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.png">
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+
+  <!-- Fontawesome CSS -->
+  <link rel="stylesheet" href="assets/css/font-awesome.min.css">
+
+  <!-- Feathericon CSS -->
+  <link rel="stylesheet" href="assets/css/feathericon.min.css">
+
+  <!-- Datatables CSS -->
+  <link rel="stylesheet" href="assets/plugins/datatables/datatables.min.css">
+
+  <!-- Main CSS -->
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body>
+  <div class="main-wrapper">
+    <!-- Header -->
+    <div class="header">
+      <div class="header-left">
+        <a href="index.html" class="logo"><img src="assets/img/logo.png" alt="Logo"></a>
+        <a href="index.html" class="logo logo-small"><img src="assets/img/logo-small.png" alt="Logo" width="30" height="30"></a>
+      </div>
+      <a href="javascript:void(0);" id="toggle_btn"><i class="fe fe-text-align-left"></i></a>
+      <a class="mobile_btn" id="mobile_btn"><i class="fa fa-bars"></i></a>
+    </div>
+    <!-- /Header -->
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+      <div class="sidebar-inner slimscroll">
+        <div id="sidebar-menu" class="sidebar-menu">
+          <ul>
+            <li class="menu-title"> <span>Main</span> </li>
+            <li><a href="index.html"><i class="fe fe-home"></i> <span>Dashboard</span></a></li>
+            <li><a href="invoice-report.html" class="active"><i class="fe fe-document"></i> <span>Audit Tables</span></a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!-- /Sidebar -->
+
+    <!-- Page Wrapper -->
+    <div class="page-wrapper">
+      <div class="content container-fluid">
+        <div class="page-header">
+          <div class="row">
+            <div class="col-sm-12">
+              <h3 class="page-title">Admin Tables (Audit)</h3>
+              <ul class="breadcrumb">
+                <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
+                <li class="breadcrumb-item active">Admin Tables</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="card">
+              <div class="card-header"><h5>Doctors</h5></div>
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table table-bordered" id="doctorTable">
+                    <thead><tr><th>ID</th><th>Name</th><th>Specialty</th><th>Email</th><th>Login Time</th></tr></thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header"><h5>Receptionists</h5></div>
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table table-bordered" id="receptionistTable">
+                    <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Login Time</th></tr></thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header"><h5>Lab Technicians</h5></div>
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table table-bordered" id="labTable">
+                    <thead><tr><th>ID</th><th>Name</th><th>Department</th><th>Email</th><th>Login Time</th></tr></thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header"><h5>Login Records</h5></div>
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table table-bordered" id="loginTable">
+                    <thead><tr><th>User ID</th><th>Role</th><th>Username</th><th>Login Time</th></tr></thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /Page Wrapper -->
+  </div>
+
+  <!-- Scripts -->
+  <script src="assets/js/jquery-3.2.1.min.js"></script>
+  <script src="assets/js/popper.min.js"></script>
+  <script src="assets/js/bootstrap.min.js"></script>
+  <script src="assets/plugins/datatables/jquery.dataTables.min.js"></script>
+  <script src="assets/plugins/datatables/datatables.min.js"></script>
+  <script src="assets/js/script.js"></script>
+
+  <script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js';
+  import { getDatabase, ref, get, onValue } from 'https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js';
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCLzofD9xL1agw4Vc6ZzWotzSnkxv-r_-E",
+    authDomain: "medflow-53221.firebaseapp.com",
+    databaseURL: "https://medflow-53221-default-rtdb.firebaseio.com",
+    projectId: "medflow-53221",
+    storageBucket: "medflow-53221.appspot.com",
+    messagingSenderId: "644922689822",
+    appId: "1:644922689822:web:531fb3d8cfc8f95f96a10f"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+  const staffProfilesRef = ref(db, 'staff_profiles');
+
+  function appendRow(tbody, columns) {
+    const row = document.createElement('tr');
+    columns.forEach(val => {
+      const cell = document.createElement('td');
+      cell.textContent = val || 'N/A';
+      row.appendChild(cell);
+    });
+    tbody.appendChild(row);
+  }
+
+  function loadStaffAuditTables() {
+    onValue(staffProfilesRef, (snapshot) => {
+      if (!snapshot.exists()) return;
+
+      const doctorBody = document.querySelector('#doctorTable tbody');
+      const receptionistBody = document.querySelector('#receptionistTable tbody');
+      const labBody = document.querySelector('#labTable tbody');
+      const loginBody = document.querySelector('#loginTable tbody');
+
+      doctorBody.innerHTML = '';
+      receptionistBody.innerHTML = '';
+      labBody.innerHTML = '';
+      loginBody.innerHTML = '';
+
+      snapshot.forEach(child => {
+        const staff = child.val();
+        const id = child.key;
+
+        if (staff.role === 'doctor') {
+          appendRow(doctorBody, [id, staff.name, staff.specialty, staff.email, staff.last_login || 'N/A']);
+        } else if (staff.role === 'receptionist') {
+          appendRow(receptionistBody, [id, staff.name, staff.email, staff.last_login || 'N/A']);
+        } else if (staff.role === 'lab') {
+          appendRow(labBody, [id, staff.name, staff.department || '-', staff.email, staff.last_login || 'N/A']);
+        }
+
+        // Log all to general login records
+        appendRow(loginBody, [id, staff.role, staff.name, staff.last_login || 'N/A']);
+      });
+    });
+  }
+
+  window.addEventListener('DOMContentLoaded', loadStaffAuditTables);
+</script>
+</body>
+
+</html>

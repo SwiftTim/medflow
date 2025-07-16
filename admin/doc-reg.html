@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- doccure/doctor-register.html  30 Nov 2019 04:12:15 GMT -->
+<head>
+    <meta charset="utf-8">
+    <title>Doccure</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+
+    <!-- Favicons -->
+    <link href="assets/img/favicon.png" rel="icon">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+
+    <!-- Fontawesome CSS -->
+    <link rel="stylesheet" href="assets/plugins/fontawesome/css/fontawesome.min.css">
+    <link rel="stylesheet" href="assets/plugins/fontawesome/css/all.min.css">
+
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+        <script src="assets/js/html5shiv.min.js"></script>
+        <script src="assets/js/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+<body class="account-page">
+
+    <!-- Main Wrapper -->
+
+
+    <!-- Page Content -->
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-8 offset-md-2">
+
+                    <!-- Account Content -->
+                    <div class="account-content">
+                        <div class="row align-items-center justify-content-center">
+                            <div class="col-md-7 col-lg-6 login-left">
+
+                            </div>
+                            <div class="col-md-12 col-lg-6 login-right">
+                                <div class="login-header">
+                                    <h3>Register as Staff <a href="login.html">Already have an account?</a></h3>
+                                </div>
+
+                                <!-- Register Form -->
+                                <form id="registerForm">
+                                    <div class="form-group form-focus">
+                                        <label class="focus-label">Full Name</label>
+                                        <input type="text" class="form-control floating" name="name" required>
+                                    </div>
+                                    <div class="form-group form-focus">
+                                        <label class="focus-label">Mobile Number</label>
+                                        <input type="text" class="form-control floating" name="phone" required>
+                                    </div>
+                                    <div class="form-group form-focus">
+                                        <label class="focus-label">Email</label>
+                                        <input type="email" class="form-control floating" name="email" required>
+                                    </div>
+                                    <div class="form-group form-focus">
+                                        <label class="focus-label">Create Password</label>
+                                        <input type="password" class="form-control floating" name="password" required>
+                                    </div>
+                                    <div class="form-group form-focus">
+                                        <label class="focus-label"></label>
+                                        <select class="form-control" name="role" required>
+                                            <option value="">Select Role</option>
+                                            <option value="doctor">Doctor</option>
+                                            <option value="nurse">Nurse</option>
+                                            <option value="pharmacist">Pharmacist</option>
+                                            <option value="lab_technician">Lab Technician</option>
+                                            <option value="receptionist">Receptionist</option>
+                                        </select>
+                                    </div>
+                                    <div class="text-right">
+                                        <a class="forgot-link" href="login.html">Already have an account?</a>
+                                    </div>
+                                    <button class="btn btn-primary btn-block btn-lg login-btn" type="submit">Signup</button>
+                                </form>
+                                <!-- /Register Form -->
+
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /Account Content -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /Page Content -->
+
+
+    </div>
+    <!-- /Main Wrapper -->
+
+    <!-- SCRIPTS START HERE -->
+
+    <!-- jQuery - MUST be loaded first if other scripts depend on it -->
+    <script src="assets/js/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JS - Depends on jQuery and Popper -->
+    <script src="assets/js/popper.min.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+
+    <!-- Custom JS - Assuming this depends on jQuery -->
+    <script src="assets/js/script.js"></script>
+
+    <!-- Firebase SDKs - These MUST be loaded before your custom Firebase initialization script -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>    <!-- For Authentication -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script> <!-- For Realtime Database -->
+
+    <!-- Your custom Firebase Integration Script - This must come AFTER all Firebase SDKs -->
+    <script>
+        // Your Firebase project configuration - Using your provided actual values!
+        const firebaseConfig = {
+            apiKey: "AIzaSyCLzofD9xL1agw4Vc6ZzWotzSnkxv-r_-E",
+            authDomain: "medflow-53221.firebaseapp.com",
+            databaseURL: "https://medflow-53221-default-rtdb.firebaseio.com",
+            projectId: "medflow-53221",
+            storageBucket: "medflow-53221.firebasestorage.app",
+            messagingSenderId: "644922689822",
+            appId: "1:644922689822:web:531fb3d8cfc8f95f96a10f",
+            measurementId: "G-EBB98DEES0"
+        };
+
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();         // Get the Auth service
+        const database = firebase.database();  // Get the Realtime Database service
+        const staffProfilesRef = database.ref('staff_profiles'); // Reference for staff data
+
+        document.getElementById('registerForm').addEventListener('submit', async function (e) {
+            e.preventDefault(); // Prevent default form submission
+
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+
+            const email = data.email;
+            const password = data.password;
+            const fullName = data.name;
+            const phone = data.phone;
+            const role = data.role;
+
+            try {
+                // 1. Create user with Email and Password using Firebase Authentication
+                // This handles the secure storage of username (email) and password.
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                const user = userCredential.user; // The newly created user object
+
+                // 2. Store additional user details (like role, name) in Realtime Database.
+                // We use the user's UID (Unique ID from Firebase Auth) as the key.
+                await staffProfilesRef.child(user.uid).set({
+                    name: fullName,
+                    phone: phone,
+                    role: role,
+                    email: email, // Storing email here for easier lookup, though it's also in Auth
+                    registered_at: new Date().toISOString() // Add a timestamp
+                });
+
+                alert('Registration successful! Redirecting to login.');
+                e.target.reset(); // Reset the form fields
+                window.location.href = 'login.html'; // Redirect to your login page
+
+            } catch (error) {
+                // Handle errors from Firebase Auth or Database
+                let errorMessage = error.message;
+
+                // Provide more user-friendly messages for common Auth errors
+                if (error.code === 'auth/email-already-in-use') {
+                    errorMessage = 'This email address is already in use by another account.';
+                } else if (error.code === 'auth/invalid-email') {
+                    errorMessage = 'The email address is not valid.';
+                } else if (error.code === 'auth/weak-password') {
+                    errorMessage = 'The password is too weak. Please choose a stronger password.';
+                } else if (error.code === 'auth/operation-not-allowed') {
+                    errorMessage = 'Email/Password sign-in is not enabled. Please enable it in Firebase Authentication settings.';
+                }
+
+                console.error("Registration error:", error);
+                alert("Registration failed: " + errorMessage);
+            }
+        });
+    </script>
+
+</body>
+
+<!-- doccure/doctor-register.html  30 Nov 2019 04:12:16 GMT -->
+</html>

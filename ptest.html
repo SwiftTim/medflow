@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Patient Profile</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+  <link href="assets/img/favicon.png" rel="icon">
+  <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+  <link rel="stylesheet" href="assets/plugins/fontawesome/css/fontawesome.min.css">
+  <link rel="stylesheet" href="assets/plugins/fontawesome/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <style>
+    input[readonly], textarea[readonly], select[readonly] {
+      background-color: #f8f9fa;
+      opacity: 1;
+      cursor: not-allowed;
+    }
+    .form-section-header {
+      border-bottom: 1px solid #dee2e6;
+      padding-bottom: 5px;
+      margin-bottom: 15px;
+      margin-top: 25px;
+    }
+  </style>
+</head>
+<body>
+<div class="main-wrapper">
+  <div class="content">
+    <div class="container">
+      <h3 class="my-4">Patient Profile <span id="patientNameDisplay" class="text-primary"></span></h3>
+      <div class="mb-3">
+        <label for="patientIdField" class="form-label">Patient ID</label>
+        <input type="text" id="patientIdField" class="form-control" readonly>
+      </div>
+      <ul class="nav nav-tabs" id="roleTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" id="diagnosis-tab" data-bs-toggle="tab" data-bs-target="#profileSection" type="button" role="tab">Diagnosis</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="prescriptions-tab" data-bs-toggle="tab" data-bs-target="#prescriptionsSection" type="button" role="tab">Prescription</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="billing-tab" data-bs-toggle="tab" data-bs-target="#billingSection" type="button" role="tab">Billing</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="tests-tab" data-bs-toggle="tab" data-bs-target="#testsSection" type="button" role="tab">Tests</button>
+        </li>
+      </ul>
+      <div class="tab-content pt-3">
+        <div class="tab-pane fade show active" id="profileSection">
+          <form id="patientEncounterForm">
+            <h5 class="form-section-header">Demographics</h5>
+            <input type="number" id="patientAge" placeholder="Age" class="form-control mb-2">
+            <select id="patientGender" class="form-control mb-2">
+              <option value="">Gender</option>
+              <option>Male</option><option>Female</option>
+            </select>
+            <input type="text" id="patientCountyResidence" placeholder="County" class="form-control mb-2">
+            <textarea id="patientLocationAddress" placeholder="Address" class="form-control mb-2"></textarea>
+            <input type="text" id="patientPlaceOfOrigin" placeholder="Origin" class="form-control mb-2">
+            <h5 class="form-section-header">Next of Kin</h5>
+            <input type="text" id="patientNextOfKinName" placeholder="Kin Name" class="form-control mb-2">
+            <input type="text" id="patientNextOfKinContact" placeholder="Kin Contact" class="form-control mb-2">
+            <h5 class="form-section-header">Vitals</h5>
+            <input type="number" id="patientWeight" placeholder="Weight" class="form-control mb-2">
+            <input type="number" id="patientHeight" placeholder="Height" class="form-control mb-2">
+            <input type="number" id="patientBPSystolic" placeholder="BP Systolic" class="form-control mb-2">
+            <input type="number" id="patientBPDiastolic" placeholder="BP Diastolic" class="form-control mb-2">
+            <h5 class="form-section-header">Diagnosis</h5>
+            <textarea id="diagnosisDetails" placeholder="Enter diagnosis" class="form-control mb-2"></textarea>
+            <button type="button" id="savePersonalInfoAndVitalsBtn" class="btn btn-primary mt-2">Save Diagnosis</button>
+          </form>
+        </div>
+
+        <div class="tab-pane fade" id="prescriptionsSection">
+          <label for="prescriptionDrug" class="form-label">Drug Name</label>
+          <input type="text" id="prescriptionDrug" class="form-control mb-2">
+          <label for="prescriptionDosage" class="form-label">Dosage</label>
+          <input type="text" id="prescriptionDosage" class="form-control mb-2">
+          <label for="prescriptionInstructions" class="form-label">Instructions</label>
+          <textarea id="prescriptionInstructions" class="form-control mb-2"></textarea>
+          <button type="button" id="addPrescriptionBtn" class="btn btn-success">Save Prescription</button>
+        </div>
+
+        <div class="tab-pane fade" id="billingSection">
+          <label for="billService" class="form-label">Service Rendered</label>
+          <input type="text" id="billService" class="form-control mb-2">
+          <label for="billAmount" class="form-label">Amount (KSH)</label>
+          <input type="number" id="billAmount" class="form-control mb-2">
+          <label for="billStatus" class="form-label">Payment Status</label>
+          <select id="billStatus" class="form-control mb-2">
+            <option value="Pending">Pending</option>
+            <option value="Paid">Paid</option>
+          </select>
+          <button type="button" id="addBillingBtn" class="btn btn-success">Save Billing</button>
+        </div>
+
+        <div class="tab-pane fade" id="testsSection">
+          <label for="testType" class="form-label">Test Type</label>
+          <input type="text" id="testType" class="form-control mb-2">
+          <label for="testInstructions" class="form-label">Instructions</label>
+          <textarea id="testInstructions" class="form-control mb-2"></textarea>
+          <label for="testResults" class="form-label">Results</label>
+          <textarea id="testResults" class="form-control mb-2"></textarea>
+          <label for="testStatus" class="form-label">Status</label>
+          <select id="testStatus" class="form-control mb-2">
+            <option value="Requested">Requested</option>
+            <option value="Completed">Completed</option>
+          </select>
+          <button type="button" id="addTestBtn" class="btn btn-success">Save Test</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js';
+  import { getDatabase, ref, get, update, push, serverTimestamp, set } from 'https://www.gstatic.com/firebasejs/9.6.10/firebase-database.js';
+  import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js';
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCLzofD9xL1agw4Vc6ZzWotzSnkxv-r_-E",
+    authDomain: "medflow-53221.firebaseapp.com",
+    databaseURL: "https://medflow-53221-default-rtdb.firebaseio.com",
+    projectId: "medflow-53221",
+    storageBucket: "medflow-53221.firebasestorage.app",
+    messagingSenderId: "644922689822",
+    appId: "1:644922689822:web:531fb3d8cfc8f95f96a10f"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+  const auth = getAuth(app);
+
+  let patientId = null;
+  let currentUserUid = null;
+
+  function getParam(param) {
+    const url = new URL(window.location.href);
+    return url.searchParams.get(param);
+  }
+
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) return location.href = 'login.html';
+    currentUserUid = user.uid;
+    patientId = getParam('id');
+
+    if (!patientId) return alert("Patient ID missing");
+    document.getElementById('patientIdField').value = patientId;
+
+    const snapshot = await get(ref(db, `patient_profiles/${patientId}`));
+    if (snapshot.exists()) {
+      const data = snapshot.val();
+      document.getElementById('patientNameDisplay').textContent = data.name || '';
+    }
+  });
+
+  document.getElementById('savePersonalInfoAndVitalsBtn').addEventListener('click', async () => {
+    const profileRef = ref(db, `patient_profiles/${patientId}`);
+    const vitalsRef = ref(db, `patient_profiles/${patientId}/vitals_history`);
+    const profileData = {
+      age: patientAge.value,
+      gender: patientGender.value,
+      county_of_residence: patientCountyResidence.value,
+      location_address: patientLocationAddress.value,
+      place_of_origin: patientPlaceOfOrigin.value,
+      next_of_kin_name: patientNextOfKinName.value,
+      next_of_kin_contact: patientNextOfKinContact.value,
+      diagnosis: diagnosisDetails.value
+    };
+    const vitalsData = {
+      weight: patientWeight.value,
+      height: patientHeight.value,
+      bp_systolic: patientBPSystolic.value,
+      bp_diastolic: patientBPDiastolic.value,
+      timestamp: serverTimestamp(),
+      recorded_by_uid: currentUserUid
+    };
+    await update(profileRef, profileData);
+    await push(vitalsRef, vitalsData);
+    alert("Diagnosis and vitals saved.");
+  });
+
+  document.getElementById('addPrescriptionBtn').addEventListener('click', async () => {
+    const data = {
+      drug: prescriptionDrug.value,
+      dosage: prescriptionDosage.value,
+      instructions: prescriptionInstructions.value,
+      date: new Date().toISOString(),
+      recorded_by_uid: currentUserUid
+    };
+    await push(ref(db, `patient_profiles/${patientId}/prescriptions`), data);
+    alert("Prescription saved.");
+  });
+
+  document.getElementById('addBillingBtn').addEventListener('click', async () => {
+    const billingRef = ref(db, `patient_profiles/${patientId}/billing`);
+    const newBillRef = push(billingRef);
+    const invoiceNo = newBillRef.key?.toUpperCase().slice(-6) || 'INVOICE';
+    const data = {
+      invoiceNo: invoiceNo,
+      service: billService.value,
+      amount: parseFloat(billAmount.value),
+      status: billStatus.value,
+      date: new Date().toISOString(),
+      recorded_by_uid: currentUserUid
+    };
+    await set(newBillRef, data);
+    alert("Billing saved.");
+  });
+
+  document.getElementById('addTestBtn').addEventListener('click', async () => {
+    const data = {
+      type: testType.value,
+      instructions: testInstructions.value,
+      results: testResults.value,
+      status: testStatus.value,
+      date: new Date().toISOString(),
+      recorded_by_uid: currentUserUid
+    };
+    await push(ref(db, `patient_profiles/${patientId}/tests`), data);
+    alert("Test entry saved.");
+  });
+</script>
+</html>

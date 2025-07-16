@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Pharmacist View</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+  <link href="assets/img/favicon.png" rel="icon">
+  <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+  <link rel="stylesheet" href="assets/plugins/fontawesome/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<div class="main-wrapper">
+
+  <!-- Header -->
+  <header class="header">
+    <!-- ... same nav as original ... -->
+  </header>
+  <!-- /Header -->
+
+  <!-- Breadcrumb -->
+  <div class="breadcrumb-bar">
+    <div class="container-fluid">
+      <div class="row align-items-center">
+        <div class="col-md-12 col-12">
+          <nav aria-label="breadcrumb" class="page-breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="index-2.html">Home</a></li>
+              <li class="breadcrumb-item active" aria-current="page">Prescription Details</li>
+            </ol>
+          </nav>
+          <h2 class="breadcrumb-title">Prescription Review</h2>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- /Breadcrumb -->
+
+  <!-- Page Content -->
+  <div class="content">
+    <div class="container-fluid">
+      <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-5 col-lg-4 col-xl-3 theiaStickySidebar">
+          <div class="card widget-profile pat-widget-profile">
+            <div class="card-body">
+              <div class="pro-widget-content">
+                <div class="profile-info-widget">
+                  <a href="#" class="booking-doc-img">
+                    <img src="assets/img/patients/patient.jpg" alt="User Image" />
+                  </a>
+                  <div class="profile-det-info">
+                    <h3><a href="patient-profile.html">{{ patient.name }}</a></h3>
+                    <div class="patient-details">
+                      <h5><b>Patient ID:</b> {{ patient.id }}</h5>
+                      <h5 class="mb-0"><i class="fas fa-map-marker-alt"></i> {{ patient.location }}</h5>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="patient-info">
+                <ul>
+                  <li>Phone <span>{{ patient.phone }}</span></li>
+                  <li>Age <span>{{ patient.age }} Years, {{ patient.gender }}</span></li>
+                  <li>Blood Group <span>{{ patient.blood_group }}</span></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- /Sidebar -->
+
+        <!-- Main Content -->
+        <div class="col-md-7 col-lg-8 col-xl-9">
+          <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <h4 class="card-title mb-0">Prescription #{{ prescription.id }}</h4>
+              <span class="text-muted">{{ prescription.date }}</span>
+            </div>
+            <div class="card-body">
+              <!-- Doctor Info -->
+              <div class="row mb-4">
+                <div class="col-sm-6">
+                  <h5>Prescribed by:</h5>
+                  <p>
+                    <strong>{{ doctor.name }}</strong><br />
+                    <span class="text-muted">{{ doctor.specialty }}</span><br />
+                    <span class="text-muted">{{ doctor.location }}</span>
+                  </p>
+                </div>
+              </div>
+
+              <!-- Prescription Summary -->
+              <h5 class="mb-3">Medicines Prescribed</h5>
+              <ul class="list-group mb-4">
+                {% for med in prescription.meds %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                  <div>
+                    <strong>{{ med.name }}</strong>  
+                    <small class="text-muted">({{ med.days }} days, {{ med.quantity }} per day)</small>
+                    <br />
+                    <span class="text-muted">Time: {{ med.time }}</span>
+                  </div>
+                </li>
+                {% endfor %}
+              </ul>
+
+              <!-- Availability -->
+              <div class="form-group">
+                <label for="med-status">Medication Status</label>
+                <select class="form-control" id="med-status" name="med_status">
+                  <option>Available</option>
+                  <option>Out of Stock</option>
+                </select>
+              </div>
+
+              <!-- Notes -->
+              <div class="form-group">
+                <label for="pharmacist-notes">Notes or Usage Instructions</label>
+                <textarea id="pharmacist-notes" class="form-control" rows="4" placeholder="e.g., Take with food. Avoid alcohol.">{{ prescription.notes }}</textarea>
+              </div>
+
+              <!-- Actions -->
+              <div class="text-right">
+                <button class="btn btn-primary">Update Status</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- /Main Content -->
+      </div>
+    </div>
+  </div>
+  <!-- /Page Content -->
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-bottom text-center">
+      <p class="mb-0">&copy; 2025 Doccure. All rights reserved.</p>
+    </div>
+  </footer>
+
+</div>
+
+<!-- Scripts -->
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/bootstrap.min.js"></script>
+<script src="assets/js/script.js"></script>
+</body>
+</html>
